@@ -11,5 +11,3 @@ CREATE TABLE logs (
 
 CREATE INDEX idx_logs_actor ON logs(actor);
 CREATE INDEX idx_logs_created_at ON logs(created_at);
-
-SELECT * FROM logs;
