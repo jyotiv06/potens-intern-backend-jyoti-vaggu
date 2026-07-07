@@ -2,8 +2,10 @@ const express = require('express');
 const hashChainService = require('./services/hashChain.service');
 
 const app = express();
+const logRoutes = require('./routes/log.routes');
 
 app.use(express.json());
+app.use('/log', logRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/health', (req, res) => {
