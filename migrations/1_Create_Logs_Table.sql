@@ -1,3 +1,4 @@
+
 CREATE TABLE logs (
     id          BIGSERIAL PRIMARY KEY,
     actor       TEXT NOT NULL,

@@ -1,4 +1,5 @@
 const express = require('express');
+const hashChainService = require('./services/hashChain.service');
 
 const app = express();
 
@@ -7,6 +8,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
+});
+
+app.get("/test", async (req, res) => {
+    const result = await hashChainService.verifyChain();
+
+    res.json(result);
 });
 
 app.use((req, res) => {
