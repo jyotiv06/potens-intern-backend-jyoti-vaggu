@@ -45,6 +45,20 @@ async function verifyLogChain(req, res, next) {
   }
 }
 
+async function exportLogs(req, res, next) {
+  try {
+    const { actor, startDate, endDate } = req.query;
+
+    const logs = await hashChainService.exportLogs({ actor, startDate, endDate });
+
+    res.status(200).json(logs);
+  } catch (err) {
+    next(err);
+  }
+}
+
+
 module.exports = { createLog };
 module.exports = { createLog, getLogById };
 module.exports = { createLog, getLogById, verifyLogChain };
+module.exports = { createLog, getLogById, verifyLogChain, exportLogs };
