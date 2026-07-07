@@ -3,6 +3,9 @@ const pool = require('../config/db');
 
 const GENESIS_HASH = '0'.repeat(64);
 
+function normalizeTimestamp(date) {
+  return new Date(date).toISOString();
+}
 
 function computeHash({ prevHash, actor, action, payload, createdAt }) {
   const payloadString = JSON.stringify(payload, Object.keys(payload).sort());
@@ -26,7 +29,7 @@ async function appendEntry({ actor, action, payload }) {
 
     const lastEntry = await getLastEntry(client);
     const prevHash = lastEntry ? lastEntry.hash : GENESIS_HASH;
-    const createdAt = new Date().toISOString();
+    const createdAt = normalizeTimestamp(new Date());
 
     const entryHash = computeHash({
         prevHash,
@@ -59,13 +62,13 @@ async function getEntryWithStatus(id) {
   const entry = result.rows[0];
   if (!entry) return null;
 
-  const recomputed = computeHash({
-    prevHash: entry.prev_hash,
-    actor: entry.actor,
-    action: entry.action,
-    payload: entry.payload,
-    createdAt: entry.created_at.toISOString()
-  });
+    const recomputed = computeHash({
+        prevHash: entry.prev_hash,
+        actor: entry.actor,
+        action: entry.action,
+        payload: entry.payload,
+        createdAt: normalizeTimestamp(entry.created_at)
+    });
 
   return {
     ...entry,
@@ -92,11 +95,11 @@ async function verifyChain() {
     }
 
     const recomputed = computeHash({
-      prevHash: row.prev_hash,
-      actor: row.actor,
-      action: row.action,
-      payload: row.payload,
-      createdAt: row.created_at.toISOString()
+        prevHash: row.prev_hash,
+        actor: row.actor,
+        action: row.action,
+        payload: row.payload,
+        createdAt: normalizeTimestamp(row.created_at)
     });
 
     if (recomputed !== row.hash) {

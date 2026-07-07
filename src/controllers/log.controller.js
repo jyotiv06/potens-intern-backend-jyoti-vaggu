@@ -20,4 +20,31 @@ async function createLog(req, res, next) {
   }
 }
 
+async function getLogById(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const entry = await hashChainService.getEntryWithStatus(id);
+
+    if (!entry) {
+      return res.status(404).json({ error: 'Log entry not found' });
+    }
+
+    res.status(200).json(entry);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function verifyLogChain(req, res, next) {
+  try {
+    const result = await hashChainService.verifyChain();
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = { createLog };
+module.exports = { createLog, getLogById };
+module.exports = { createLog, getLogById, verifyLogChain };
