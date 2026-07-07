@@ -1,22 +1,17 @@
 const express = require('express');
-const hashChainService = require('./services/hashChain.service');
-
-const app = express();
+const apiKeyAuth = require('./middleware/auth.middleware');
 const logRoutes = require('./routes/log.routes');
 
+const app = express();
+
 app.use(express.json());
-app.use('/log', logRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.get("/test", async (req, res) => {
-    const result = await hashChainService.verifyChain();
-
-    res.json(result);
-});
+app.use('/log', apiKeyAuth, logRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
